@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1c140f" id="meta-theme-color">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>bir yönüylë,</title>
+    
+    <!-- Disc icon favicon matching the primary theme color -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a64,64,0,1,1,64-64A64.07,64.07,0,0,1,128,192Zm0-80a16,16,0,1,0,16,16A16,16,0,0,0,128,112Z' fill='%23d17b38'/%3E%3C/svg%3E">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#1c140f',
+                        darker: '#140e0a',
+                        surface: '#241a13',
+                        surfaceHover: '#3b2b20',
+                        lightBg: '#f7f4f0',
+                        lightHighlight: '#ebe4dc',
+                        lightBorder: '#dcd1c6',
+                        primary: '#d17b38', 
+                        gray: {
+                            50: '#fcfbfa', 100: '#f5f0eb', 200: '#e6dbcf', 300: '#d6c5b3',
+                            400: '#b5a18c', 500: '#947e68', 600: '#75604d', 700: '#594636',
+                            800: '#3b2b20', 900: '#241a13', 950: '#140e0a',
+                        }
+                    },
+                    fontFamily: { sans: ['Merriweather', 'serif'] }
+                }
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('meta-theme-color').setAttribute('content', '#f7f4f0');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-lightBg text-gray-800 dark:bg-dark dark:text-gray-200 flex flex-col transition-colors duration-300">
+
+    <!-- Sticky Wrapper -->
+    <div class="sticky top-0 z-[40] w-full flex flex-col shadow-sm">
+        
+        <!-- Top Header Strip -->
+        <header class="bg-lightBg/90 dark:bg-darker/90 backdrop-blur-md border-b border-lightBorder dark:border-gray-800 safe-pt px-3 py-2 sm:px-4 sm:py-3 w-full flex justify-between items-center transition-colors">
+            
+            <!-- App Logo / Title -->
+            <h1 class="text-lg sm:text-2xl font-black italic tracking-tighter text-[#594636] dark:text-[#ebe4dc] pl-1">bir yönüylë,</h1>
+
+            <!-- Right Side Menu (Stats, Add, Grid & Hamburger Menu) -->
+            <div class="flex items-center gap-0.5 sm:gap-2 ml-4 flex-shrink-0 pr-1">
+                
+                <!-- 1. GRUP: Ekle ve İstatistik Butonları (Yerleri Değiştirildi) -->
+                <div class="flex items-center gap-1">
+                    <!-- Add Button with Hover Menu -->
+                    <div class="relative flex items-center group">
+                        <button onclick="if(!document.getElementById('view-cinema').classList.contains('hidden') || !document.getElementById('view-cinema-search').classList.contains('hidden')) app.openCinemaModal(); else if(!document.getElementById('view-literature').classList.contains('hidden')) app.openLiteratureModal(); else app.openEmptyAlbumModal();" class="p-1 sm:p-2 rounded-full text-primary transition-all active:scale-95 flex items-center justify-center hover:bg-primary/10">
+                            <i class="ph-bold ph-plus text-lg sm:text-2xl transition-transform duration-300 group-hover:rotate-90"></i>
+                        </button>
+                        
+                        <!-- Hover Categories Menu (Sola Doğru Yatay Açılır) -->
+                        <div class="absolute right-full top-1/2 -translate-y-1/2 pr-2 flex items-center justify-center gap-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto translate-x-2 group-hover:translate-x-0 transition-all duration-300 z-50">
+                            <button onclick="app.openLiteratureModal()" title="Edebiyat Ekle" class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform flex-shrink-0">
+                                <i class="ph-fill ph-book-open text-base"></i>
+                            </button>
+                            <button onclick="app.openCinemaModal()" title="Sinema Ekle" class="w-9 h-9 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform flex-shrink-0">
+                                <i class="ph-fill ph-film-strip text-base"></i>
+                            </button>
+                            <button onclick="app.openEmptyAlbumModal()" title="Müzik Ekle" class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform flex-shrink-0">
+                                <i class="ph-fill ph-music-notes text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    </div>
+
+                <!-- YENİ: Tema Butonu (İstatistik ve Dil kaldırıldı) -->
+                <div class="flex items-center gap-0.5 sm:gap-1">
+                    <button onclick="app.toggleTheme()" title="Tema / Theme" class="p-1 sm:p-2 rounded-full hover:bg-lightHighlight dark:hover:bg-gray-800 transition-colors active:scale-95 flex items-center justify-center">
+                        <i id="theme-icon" class="ph-fill ph-moon text-lg px-1 text-yellow-400"></i>
+                    </button>
+                </div>
+
+                <!-- 2. GRUP: Global Grid Toggle (Sağa Taşındı) -->
+                <div class="flex items-center bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 shadow-sm">
+                    <button data-i18n-title="tooltip_grid_normal" onclick="app.setGlobalGridSize('normal')" id="btn-global-grid-normal" class="p-1 sm:p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                        <i class="ph-fill ph-square text-sm sm:text-base"></i>
+                    </button>
+                    <button data-i18n-title="tooltip_grid_small" onclick="app.setGlobalGridSize('small')" id="btn-global-grid-small" class="p-1 sm:p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                        <i class="ph-fill ph-squares-four text-sm sm:text-base"></i>
+                    </button>
+                    <button data-i18n-title="tooltip_grid_xsmall" onclick="app.setGlobalGridSize('xsmall')" id="btn-global-grid-xsmall" class="p-1 sm:p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                        <i class="ph-fill ph-dots-nine text-sm sm:text-base"></i>
+                    </button>
+                </div>
+
+                    <!-- Admin Giriş Butonu (Sadece #admin linkinde görünür) -->
+                        <button id="header-login-btn" onclick="app.signIn()" class="hidden items-center gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-sm ml-1 sm:ml-2">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4 sm:w-4 sm:h-4 bg-white rounded-full p-0.5" alt="Google"> <span class="hidden sm:inline">Giriş Yap</span>
+                        </button>
+
+                        <!-- Admin Çıkış Butonu (Giriş yapıldığında görünür) -->
+                        <div id="header-admin-profile" class="hidden items-center gap-1 sm:gap-2 ml-1 sm:ml-2">
+                            <button onclick="app.signOut()" class="p-1.5 sm:p-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 hover:bg-red-200 transition-colors shadow-sm active:scale-95" title="Çıkış Yap">
+                                <i class="ph-bold ph-sign-out text-sm sm:text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+        <!-- Category Nav & Filters (Second Strip) -->
+        <div class="w-full bg-lightBg/95 dark:bg-dark/95 backdrop-blur-md border-b border-lightBorder dark:border-gray-800 px-2 py-1.5 sm:px-4 sm:py-2 flex items-center justify-between transition-colors overflow-x-auto hide-scrollbar">
+            
+            <!-- Sol Kısım: Kategori Butonları -->
+            <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+                <!-- Homepage / All (Default Active) -->
+                <button onclick="activateCategory(this)" 
+                        title="Tüm Kayıtlar"
+                        data-active="true"
+                        data-base-class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0"
+                        data-idle-class="text-gray-400 dark:text-gray-500 bg-transparent"
+                        data-hover-class="hover:text-indigo-500 hover:bg-indigo-500/10"
+                        data-active-class="text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 shadow-inner"
+                        class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 shadow-inner">
+                    <i class="ph-fill ph-house text-[20px] sm:text-[26px] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1 group-hover:scale-110"></i>
+                </button>
+
+                <!-- Music -->
+                <button onclick="activateCategory(this)" 
+                        title="Müzik"
+                        data-active="false"
+                        data-base-class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0"
+                        data-idle-class="text-gray-400 dark:text-gray-500 bg-transparent"
+                        data-hover-class="hover:text-emerald-500 hover:bg-emerald-500/10"
+                        data-active-class="text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 shadow-inner"
+                        class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0 text-gray-400 dark:text-gray-500 bg-transparent hover:text-emerald-500 hover:bg-emerald-500/10">
+                    <i class="ph-fill ph-music-notes text-[20px] sm:text-[26px] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1 group-hover:scale-110"></i>
+                </button>
+
+                <!-- Cinema -->
+                <button onclick="activateCategory(this)" 
+                        title="Sinema"
+                        data-active="false"
+                        data-base-class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0"
+                        data-idle-class="text-gray-400 dark:text-gray-500 bg-transparent"
+                        data-hover-class="hover:text-purple-500 hover:bg-purple-500/10"
+                        data-active-class="text-purple-600 dark:text-purple-400 bg-purple-500/10 shadow-inner"
+                        class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0 text-gray-400 dark:text-gray-500 bg-transparent hover:text-purple-500 hover:bg-purple-500/10">
+                    <i class="ph-fill ph-film-strip text-[20px] sm:text-[26px] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1 group-hover:scale-110"></i>
+                </button>
+
+                <!-- Literature -->
+                <button onclick="activateCategory(this)" 
+                        title="Edebiyat"
+                        data-active="false"
+                        data-base-class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0"
+                        data-idle-class="text-gray-400 dark:text-gray-500 bg-transparent"
+                        data-hover-class="hover:text-primary hover:bg-primary/10"
+                        data-active-class="text-primary bg-primary/10 shadow-inner"
+                        class="cat-icon-btn group relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-[14px] flex items-center justify-center transition-all duration-300 ease-out flex-shrink-0 text-gray-400 dark:text-gray-500 bg-transparent hover:text-primary hover:bg-primary/10">
+                    <i class="ph-fill ph-book-open text-[20px] sm:text-[26px] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1 group-hover:scale-110"></i>
+                </button>
+            </div>
+
+            <!-- Sağ Kısım: Dinamik Filtreler -->
+            <div class="flex items-center flex-shrink-0 ml-auto pl-2 sm:pl-4">
+                
+                <!-- Anasayfa Filtreleri (Sadece Sıralama) -->
+                <div id="home-filter-bar" class="flex items-center gap-1 sm:gap-2 animate-fade-in">
+                    <!-- Mobil: Sıralama Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-arrows-down-up text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 flex-shrink-0 shadow-sm animate-fade-in">
+                        <button data-i18n-title="tooltip_sort_added" onclick="app.toggleHomeSort('dateAdded')" id="btn-home-sort-dateAdded" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="ph-bold ph-calendar-plus text-xs sm:text-base"></i><i id="icon-home-sort-dateAdded-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_year" onclick="app.toggleHomeSort('year')" id="btn-home-sort-year" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="ph-bold ph-clock text-xs sm:text-base"></i><i id="icon-home-sort-year-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_rating" onclick="app.toggleHomeSort('rating')" id="btn-home-sort-rating" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="ph-bold ph-star text-xs sm:text-base"></i><i id="icon-home-sort-rating-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                    </div>
+                </div>
+
+                <!-- Müzik Filtreleri -->
+                <div id="filter-bar" class="hidden items-center gap-1 sm:gap-2 animate-fade-in">
+                    <!-- Mobil: Filtre Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-funnel text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center gap-1 sm:gap-1.5 flex-shrink-0 animate-fade-in">
+                        <button data-i18n-title="tooltip_filter_artist" onclick="app.openDropdown(event, 'Group')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-group" class="ph-bold ph-microphone-stage text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button data-i18n-title="tooltip_filter_genre" onclick="app.openDropdown(event, 'Genre')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-genre" class="ph-bold ph-music-notes text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button data-i18n-title="tooltip_filter_year" onclick="app.openDropdown(event, 'Year')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-year" class="ph-bold ph-calendar text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button data-i18n-title="tooltip_filter_label" onclick="app.openDropdown(event, 'Label')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-label" class="ph-bold ph-record text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                    </div>
+                    <div class="h-5 w-px bg-lightBorder dark:bg-gray-700 mx-0.5 sm:mx-1 flex-shrink-0"></div>
+                    
+                    <!-- Mobil: Sıralama Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-arrows-down-up text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 flex-shrink-0 shadow-sm animate-fade-in">
+                        <button data-i18n-title="tooltip_sort_added" onclick="app.toggleSort('dateAdded')" id="btn-sort-dateAdded" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-emerald-500 transition-colors"><i class="ph-bold ph-calendar-plus text-xs sm:text-base"></i><i id="icon-sort-dateAdded-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_year" onclick="app.toggleSort('year')" id="btn-sort-year" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-emerald-500 transition-colors"><i class="ph-bold ph-clock text-xs sm:text-base"></i><i id="icon-sort-year-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_rating" onclick="app.toggleSort('rating')" id="btn-sort-rating" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-emerald-500 transition-colors"><i class="ph-bold ph-star text-xs sm:text-base"></i><i id="icon-sort-rating-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                    </div>
+                </div>
+
+                <!-- Sinema Filtreleri -->
+                <div id="cinema-filter-bar" class="hidden items-center gap-1 sm:gap-2 animate-fade-in">
+                    <!-- Mobil: Filtre Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-funnel text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center gap-1 sm:gap-1.5 flex-shrink-0 animate-fade-in">
+                        <button title="Yönetmene Göre Filtrele" data-i18n-title="tooltip_filter_director" onclick="app.openCinemaDropdown(event, 'Director')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-cinema-director" class="ph-bold ph-video-camera text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Türlere Göre Filtrele" data-i18n-title="tooltip_filter_genre" onclick="app.openCinemaDropdown(event, 'Genre')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-cinema-genre" class="ph-bold ph-mask-happy text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Yıllara Göre Filtrele" data-i18n-title="tooltip_filter_year" onclick="app.openCinemaDropdown(event, 'Year')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-cinema-year" class="ph-bold ph-calendar text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Ülkelere Göre Filtrele" data-i18n-title="tooltip_filter_country" onclick="app.openCinemaDropdown(event, 'Country')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-cinema-country" class="ph-bold ph-globe-hemisphere-west text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                    </div>
+                    <div class="h-5 w-px bg-lightBorder dark:bg-gray-700 mx-0.5 sm:mx-1 flex-shrink-0"></div>
+                    
+                    <!-- Mobil: Sıralama Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-arrows-down-up text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 flex-shrink-0 shadow-sm animate-fade-in">
+                        <button data-i18n-title="tooltip_sort_added" onclick="app.toggleCinemaSort('dateAdded')" id="btn-cinema-sort-dateAdded" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-purple-500 transition-colors"><i class="ph-bold ph-calendar-plus text-xs sm:text-base"></i><i id="icon-cinema-sort-dateAdded-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_year" onclick="app.toggleCinemaSort('year')" id="btn-cinema-sort-year" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-purple-500 transition-colors"><i class="ph-bold ph-clock text-xs sm:text-base"></i><i id="icon-cinema-sort-year-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_rating" onclick="app.toggleCinemaSort('rating')" id="btn-cinema-sort-rating" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-purple-500 transition-colors"><i class="ph-bold ph-star text-xs sm:text-base"></i><i id="icon-cinema-sort-rating-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                    </div>
+                </div>
+
+                <!-- Edebiyat Filtreleri -->
+                <div id="literature-filter-bar" class="hidden items-center gap-1 sm:gap-2 animate-fade-in">
+                    <!-- Mobil: Filtre Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-funnel text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center gap-1 sm:gap-1.5 flex-shrink-0 animate-fade-in">
+                        <button title="Yazarlara Göre Filtrele" data-i18n-title="tooltip_filter_author" onclick="app.openLiteratureDropdown(event, 'Author')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-author" class="ph-bold ph-pen-nib text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Ülkelere Göre Filtrele" data-i18n-title="tooltip_filter_country" onclick="app.openLiteratureDropdown(event, 'Country')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-country" class="ph-bold ph-globe-hemisphere-west text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Yıllara Göre Filtrele" data-i18n-title="tooltip_filter_year" onclick="app.openLiteratureDropdown(event, 'Year')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-year" class="ph-bold ph-calendar text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Türlere Göre Filtrele" data-i18n-title="tooltip_filter_genre" onclick="app.openLiteratureDropdown(event, 'Genre')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-genre" class="ph-bold ph-bookmarks text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Yayınevine Göre Filtrele" data-i18n-title="tooltip_filter_publisher" onclick="app.openLiteratureDropdown(event, 'Publisher')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-publisher" class="ph-bold ph-buildings text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                        <button title="Çevirmene Göre Filtrele" onclick="app.openLiteratureDropdown(event, 'Translator')" class="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm hover:bg-lightHighlight dark:hover:bg-surfaceHover active:scale-95 transition-colors cursor-pointer"><i id="icon-filter-literature-translator" class="ph-bold ph-translate text-gray-500 transition-colors pointer-events-none text-xs sm:text-base"></i></button>
+                    </div>
+                    <div class="h-5 w-px bg-lightBorder dark:bg-gray-700 mx-0.5 sm:mx-1 flex-shrink-0"></div>
+                    
+                    <!-- Mobil: Sıralama Aç/Kapat Butonu -->
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.nextElementSibling.classList.toggle('flex');" class="sm:hidden relative flex items-center justify-center w-7 h-7 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full flex-shrink-0 shadow-sm active:scale-95 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
+                        <i class="ph-bold ph-arrows-down-up text-xs pointer-events-none"></i>
+                    </button>
+                    
+                    <div class="hidden sm:flex items-center bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 flex-shrink-0 shadow-sm animate-fade-in">
+                        <button data-i18n-title="tooltip_sort_added" onclick="app.toggleLiteratureSort('dateAdded')" id="btn-literature-sort-dateAdded" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-primary transition-colors"><i class="ph-bold ph-calendar-plus text-xs sm:text-base"></i><i id="icon-literature-sort-dateAdded-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_year" onclick="app.toggleLiteratureSort('year')" id="btn-literature-sort-year" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-primary transition-colors"><i class="ph-bold ph-clock text-xs sm:text-base"></i><i id="icon-literature-sort-year-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                        <button data-i18n-title="tooltip_sort_rating" onclick="app.toggleLiteratureSort('rating')" id="btn-literature-sort-rating" class="flex items-center gap-0.5 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full text-gray-500 hover:text-primary transition-colors"><i class="ph-bold ph-star text-xs sm:text-base"></i><i id="icon-literature-sort-rating-dir" class="ph-bold ph-arrow-down text-[9px] sm:text-[10px] opacity-30"></i></button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Script for interactive category switching and animations -->
+            <script>
+                function activateCategory(selectedBtn) {
+                    document.querySelectorAll('.cat-icon-btn').forEach(btn => {
+                        btn.dataset.active = "false";
+                        btn.className = `${btn.dataset.baseClass} ${btn.dataset.idleClass} ${btn.dataset.hoverClass}`;
+                    });
+                    
+                    selectedBtn.dataset.active = "true";
+                    selectedBtn.className = `${selectedBtn.dataset.baseClass} ${selectedBtn.dataset.activeClass}`;
+                    
+                    const icon = selectedBtn.querySelector('i');
+                    icon.style.transform = 'scale(0.7) translateY(4px)';
+                    setTimeout(() => { 
+                        icon.style.transform = ''; 
+                    }, 150);
+
+                    // Tüm filtre barlarını gizle
+                    ['home-filter-bar', 'filter-bar', 'cinema-filter-bar', 'literature-filter-bar'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            el.classList.add('hidden');
+                            el.classList.remove('flex');
+                        }
+                    });
+                    
+                    if (window.app && typeof app.showView === 'function') {
+                        if (selectedBtn.title === 'Sinema') {
+                            const fBar = document.getElementById('cinema-filter-bar');
+                            if(fBar) { fBar.classList.remove('hidden'); fBar.classList.add('flex'); }
+                            app.showView('cinema');
+                        } else if (selectedBtn.title === 'Edebiyat') {
+                            const fBar = document.getElementById('literature-filter-bar');
+                            if(fBar) { fBar.classList.remove('hidden'); fBar.classList.add('flex'); }
+                            app.showView('literature');
+                        } else if (selectedBtn.title === 'Müzik') {
+                            const fBar = document.getElementById('filter-bar');
+                            if(fBar) { fBar.classList.remove('hidden'); fBar.classList.add('flex'); }
+                            app.showView('library');
+                        } else {
+                            const fBar = document.getElementById('home-filter-bar');
+                            if(fBar) { fBar.classList.remove('hidden'); fBar.classList.add('flex'); }
+                            app.showView('home');
+                        }
+                    }
+                }
+            </script>
+        </div>
+    </div>
+
+    <!-- Global Category Selector Modal -->
+    <div id="category-selector-modal" class="fixed inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm z-[150] hidden items-end sm:items-center justify-center sm:p-4 transition-opacity duration-300 opacity-0" onclick="if(event.target === this) { this.classList.add('opacity-0'); setTimeout(() => this.classList.add('hidden'), 300); }">
+        <div class="w-full sm:max-w-sm bg-white dark:bg-surface border-t sm:border border-lightBorder dark:border-gray-800 rounded-t-[2rem] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden transform transition-all duration-300 max-h-[85vh]">
+            
+            <div class="p-5 pb-3 flex justify-between items-center relative">
+                <h3 class="font-bold text-gray-900 dark:text-white text-lg">Kategori Değiştir</h3>
+                <button onclick="document.getElementById('category-selector-modal').classList.add('opacity-0'); setTimeout(() => document.getElementById('category-selector-modal').classList.add('hidden'), 300);" class="bg-lightHighlight dark:bg-gray-800 text-gray-600 dark:text-gray-300 p-2 rounded-full transition-colors active:scale-90">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-3 flex flex-col gap-1 overflow-y-auto hide-scrollbar pb-8">
+                <!-- Music (Active) -->
+                <button class="flex items-center gap-4 p-3 rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/20 transition-all group active:scale-[0.98]">
+                    <div class="w-12 h-12 rounded-xl bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-music-notes text-2xl"></i>
+                    </div>
+                    <div class="text-left flex-grow">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-base">Music</h4>
+                        <p class="text-[11px] text-gray-500 font-medium">Albums, EPs, Singles</p>
+                    </div>
+                    <i class="ph-bold ph-check-circle text-primary text-xl"></i>
+                </button>
+
+                <!-- Cinema -->
+                <button class="flex items-center gap-4 p-3 rounded-2xl hover:bg-lightHighlight dark:hover:bg-surfaceHover border border-transparent transition-all group active:scale-[0.98]">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-film-strip text-2xl"></i>
+                    </div>
+                    <div class="text-left flex-grow">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-base">Cinema</h4>
+                        <p class="text-[11px] text-gray-500 font-medium">Movies, Documentaries</p>
+                    </div>
+                </button>
+
+                <!-- Literature -->
+                <button class="flex items-center gap-4 p-3 rounded-2xl hover:bg-lightHighlight dark:hover:bg-surfaceHover border border-transparent transition-all group active:scale-[0.98]">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-book-open text-2xl"></i>
+                    </div>
+                    <div class="text-left flex-grow">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-base">Literature</h4>
+                        <p class="text-[11px] text-gray-500 font-medium">Books, Essays, Articles</p>
+                    </div>
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div id="sidebar-backdrop" onclick="app.toggleSidebar(false)" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <div id="right-sidebar" class="fixed inset-y-0 right-0 z-[70] w-80 max-w-[85vw] bg-white dark:bg-surface border-l border-lightBorder dark:border-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col safe-pt safe-pb">
+        <div class="p-4 border-b border-lightBorder dark:border-gray-800 flex justify-between items-center bg-lightBg dark:bg-darker">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="ph-fill ph-gear text-primary"></i> <span data-i18n="menu_settings">Menü & Ayarlar</span>
+            </h2>
+            <button onclick="app.toggleSidebar(false)" aria-label="Close Menu" class="p-2 -mr-2 rounded-full hover:bg-lightBorder dark:hover:bg-gray-700 text-gray-500 transition-colors">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+
+        <!-- YENİ KOD BURAYA YAPIŞTIRILACAK -->
+        <div id="auth-wrapper" class="p-4 border-b border-lightBorder dark:border-gray-800 bg-white dark:bg-surface">
+            
+            <!-- ÇIKIŞ YAPILMIŞ DURUM (BİRLEŞTİRİLMİŞ MODERN FORM) -->
+            <div id="auth-logged-out" class="flex flex-col gap-4">
+                <div class="text-center mb-1">
+                    <h2 id="auth-title" class="text-xl font-black text-gray-900 dark:text-white tracking-tight">Giriş Yap</h2>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1" data-i18n="login_prompt">Arşivinizi yedeklemek ve topluluğa katılmak için giriş yapın.</p>
+                </div>
+
+                <!-- Google Butonu (Üstte) -->
+                <button onclick="app.signIn()" class="w-full bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-surfaceHover text-gray-700 dark:text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-3 transition-all shadow-sm">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                    <span>Google ile Devam Et</span>
+                </button>
+            </div>
+
+            <!-- GİRİŞ YAPILMIŞ DURUM (PROFİL VE NICKNAME DÜZENLEME) -->
+            <div id="auth-logged-in" class="hidden flex-col gap-4">
+                <div class="flex items-center gap-3 bg-lightBg dark:bg-darker p-3 rounded-xl border border-lightBorder dark:border-gray-800 shadow-inner">
+                    <img id="user-avatar" src="" alt="User" class="w-12 h-12 rounded-full object-cover border border-lightBorder dark:border-gray-700 shadow-sm flex-shrink-0">
+                    <div class="flex flex-col min-w-0 flex-grow">
+                        <span id="user-name" class="text-sm font-black text-gray-900 dark:text-white truncate">User Name</span>
+                        <span id="user-email" class="text-[10px] text-gray-500 truncate">user@example.com</span>
+                    </div>
+                </div>
+
+                <!-- Kullanıcı Adı Güncelleme Alanı -->
+                <div class="flex flex-col gap-1.5 mt-1">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">Kullanıcı Adı (Nickname)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="profile-nickname-input" placeholder="Yeni adınız..." class="flex-grow bg-lightBg dark:bg-darker border border-lightBorder dark:border-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-gray-800 dark:text-gray-200">
+                        <button onclick="app.updateNickname()" class="bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-sm">
+                            Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="app.signOut()" class="w-full bg-white dark:bg-surfaceHover text-gray-600 dark:text-gray-400 hover:text-red-500 border border-lightBorder dark:border-gray-700 hover:border-red-200 dark:hover:border-red-900/50 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors active:scale-[0.98] mt-2">
+                    <i class="ph-bold ph-sign-out text-lg"></i> <span data-i18n="sign_out">Çıkış Yap</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-grow overflow-y-auto">
+             
+        </div>
+    </div>
+
+    <main class="w-full flex-grow relative overflow-x-hidden safe-pb pb-24">
+
+        <!-- NEW: Home / All Posts Section -->
+        <section id="view-home" class="view-section hidden animate-fade-in w-full flex flex-col p-4">
+            <div id="home-empty-state" class="hidden flex-col items-center justify-center py-20 text-center w-full">
+                <div class="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-fill ph-house text-4xl text-indigo-600 dark:text-indigo-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Henüz Kayıt Yok</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto mb-6">Kategorilerden ilk kaydınızı eklemeye başlayın.</p>
+            </div>
+            <div id="home-grid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3"></div>
+        </section>
+
+        <section id="view-library" class="view-section animate-fade-in w-full flex flex-col p-4">
+            <div id="library-grid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3"></div>
+            
+            <div id="empty-library-state" class="hidden flex-col items-center justify-center py-20 text-center w-full">
+                <div class="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-fill ph-music-notes text-4xl text-emerald-600 dark:text-emerald-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2" data-i18n="no_albums">No albums added yet</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto mb-6" data-i18n="no_albums_desc">Search for albums while listening to music, rate tracks, and build your archive.</p>
+                <div class="flex gap-3">
+                    <button onclick="app.openEmptyAlbumModal()" class="bg-emerald-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-transform shadow-lg shadow-emerald-600/20 flex items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> <span data-i18n="add_first_album">Albüm Ekle</span>
+                    </button>
+                    <button onclick="app.showView('search')" class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-6 py-3 rounded-full font-bold active:scale-95 transition-transform flex items-center gap-2 border border-emerald-500/20">
+                        <i class="ph-bold ph-magnifying-glass"></i> <span data-i18n="search_btn">Ara</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Social & Aggregated Community Section -->
+        <section id="view-community" class="view-section hidden animate-fade-in w-full p-4 pt-6 md:pt-10">
+            <div class="max-w-7xl mx-auto flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white" data-i18n="community_title">Topluluk & Puanlar</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Diğer kullanıcıların puanları ve genel albüm/şarkı ortalamaları.</p>
+                    </div>
+                    
+                    <div class="flex bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 p-1 rounded-xl w-fit shadow-sm">
+                        <button onclick="app.switchCommunityTab('aggregated')" id="tab-btn-aggregated" class="px-4 py-2 rounded-lg text-xs font-bold bg-primary text-white transition-colors">
+                            <span data-i18n="tab_aggregated">Genel Ortalamalar</span>
+                        </button>
+                        <button onclick="app.switchCommunityTab('feed')" id="tab-btn-feed" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-500 dark:text-gray-400 transition-colors">
+                            <span data-i18n="tab_users">Kamuoyu Akışı</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aggregated Averages Sub-view -->
+                <div id="community-tab-aggregated" class="space-y-6">
+                    <div id="aggregated-albums-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+                </div>
+
+                <!-- Public Feed Sub-view -->
+                <div id="community-tab-feed" class="hidden space-y-6">
+                    <div id="public-ratings-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-search" class="view-section hidden animate-fade-in w-full flex flex-col p-4 pt-6 md:pt-10">
+            <div class="w-full max-w-2xl mx-auto flex flex-col gap-4 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 md:text-center" data-i18n="what_listening">Ne dinliyorsun?</h2>
+                
+                <div class="w-full flex flex-col gap-4">
+                    <div class="bg-white dark:bg-surface p-1 rounded-xl flex gap-1 shadow-sm border border-lightBorder dark:border-gray-800">
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="searchType" value="artist" checked class="peer hidden" onchange="app.updateSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-lightHighlight dark:peer-checked:bg-darker peer-checked:text-primary rounded-lg transition-colors" data-i18n="artist_disco">Sanatçı</div>
+                        </label>
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="searchType" value="album" class="peer hidden" onchange="app.updateSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-lightHighlight dark:peer-checked:bg-darker peer-checked:text-primary rounded-lg transition-colors" data-i18n="by_album">Albüm</div>
+                        </label>
+                    </div>
+
+                    <div class="relative w-full shadow-lg dark:shadow-none rounded-2xl">
+                        <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
+                        <input type="text" id="search-input" data-i18n-placeholder="placeholder_artist" placeholder="Sanatçı/grup adı yazın..." 
+                               class="w-full bg-white dark:bg-surface border-2 border-transparent text-gray-900 dark:text-white rounded-2xl pl-12 pr-16 py-4 text-base focus:outline-none focus:border-primary transition-colors shadow-sm"
+                               onkeypress="if(event.key === 'Enter') { this.blur(); app.search(); }">
+                        <button onclick="app.search()" id="search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white rounded-xl w-10 h-10 flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50">
+                            <i class="ph-bold ph-arrow-right text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="search-loading" class="hidden flex flex-col items-center justify-center gap-4 py-12">
+                <i class="ph-bold ph-spinner-gap text-primary text-4xl animate-spin"></i>
+                <p class="text-sm font-medium text-gray-500" id="search-status-text" data-i18n="search_db">Veritabanı aranıyor...</p>
+            </div>
+
+            <div id="search-results" class="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8"></div>
+        </section>
+
+        <section id="view-stats" class="view-section hidden animate-fade-in w-full p-4 pt-6 md:pt-10">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 md:mb-8" data-i18n="music_taste">Müzik Zevkin</h2>
+                
+                <div class="grid grid-cols-3 gap-3 md:gap-6 mb-8">
+                    <div class="bg-white dark:bg-surface p-4 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm flex flex-col items-center text-center">
+                        <div class="bg-purple-100 dark:bg-purple-500/20 p-2.5 rounded-full text-purple-600 dark:text-purple-400 mb-2">
+                            <i class="ph-fill ph-users text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 text-[10px] sm:text-xs font-semibold uppercase mb-1" data-i18n="unique_artists">Sanatçı</p>
+                        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="stat-unique-artists">0</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-surface p-4 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm flex flex-col items-center text-center">
+                        <div class="bg-blue-100 dark:bg-blue-500/20 p-2.5 rounded-full text-blue-600 dark:text-blue-400 mb-2">
+                            <i class="ph-fill ph-vinyl-record text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 text-[10px] sm:text-xs font-semibold uppercase mb-1" data-i18n="total_albums">Albümler</p>
+                        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="stat-total-albums">0</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-surface p-4 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm flex flex-col items-center text-center">
+                        <div class="bg-yellow-100 dark:bg-yellow-500/20 p-2.5 rounded-full text-yellow-600 dark:text-yellow-400 mb-2">
+                            <i class="ph-fill ph-star text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 text-[10px] sm:text-xs font-semibold uppercase mb-1" data-i18n="overall_avg">Ortalama</p>
+                        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="stat-avg-rating">0.0</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white dark:bg-surface p-4 md:p-6 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm flex flex-col">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-chart-bar text-primary text-lg"></i> <span data-i18n="rating_dist">Puan Dağılımı (Parçalar)</span>
+                        </h3>
+                        <div class="relative w-full h-56 md:h-64"><canvas id="chart-distribution"></canvas></div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-surface p-4 md:p-6 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm flex flex-col">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-calendar text-blue-500 text-lg"></i> <span data-i18n="decade_breakdown">Dönemlere Göre Ortalama</span>
+                        </h3>
+                        <div class="relative w-full h-56 md:h-64"><canvas id="chart-decade"></canvas></div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-surface p-4 md:p-6 rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm lg:col-span-2 flex flex-col">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-trend-up text-green-500 text-lg"></i> <span data-i18n="listening_trends">Aylara Göre Puanlama Eğilimi</span>
+                        </h3>
+                        <div class="relative w-full h-56 md:h-72"><canvas id="chart-trends"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
+                    <div class="bg-white dark:bg-surface rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
+                        <div class="bg-lightBg dark:bg-darker p-3 border-b border-lightBorder dark:border-gray-800">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                                <i class="ph-fill ph-trophy text-yellow-500 text-lg"></i> <span data-i18n="favorite_albums">Favori Albümlerin</span>
+                            </h3>
+                        </div>
+                        <div id="top-albums-list" class="p-2 gap-2 flex flex-col flex-1"></div>
+                    </div>
+
+                    <div class="bg-white dark:bg-surface rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
+                        <div class="bg-lightBg dark:bg-darker p-3 border-b border-lightBorder dark:border-gray-800 flex justify-between items-center">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                                <i class="ph-fill ph-users text-primary text-lg"></i> <span data-i18n="rated_artists">Sanatçılar</span>
+                            </h3>
+                            <div class="flex items-center gap-0.5 bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-full p-0.5 shadow-sm">
+                                <button data-i18n-title="tooltip_sort_artist_count" onclick="app.toggleArtistStatsSort('count')" id="btn-stats-sort-count" class="flex items-center gap-0.5 px-2 py-1.5 rounded-full text-gray-500 hover:text-primary transition-colors">
+                                    <i class="ph-fill ph-vinyl-record text-base"></i>
+                                    <i id="icon-stats-sort-count-dir" class="ph-bold ph-arrow-down text-[10px] hidden"></i>
+                                </button>
+                                <button data-i18n-title="tooltip_sort_artist_rating" onclick="app.toggleArtistStatsSort('rating')" id="btn-stats-sort-rating" class="flex items-center gap-0.5 px-2 py-1.5 rounded-full text-gray-500 hover:text-primary transition-colors">
+                                    <i class="ph-fill ph-star text-base"></i>
+                                    <i id="icon-stats-sort-rating-dir" class="ph-bold ph-arrow-down text-[10px] hidden"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <ul id="artist-list" class="divide-y divide-lightHighlight dark:divide-gray-800/50 flex-1"></ul>
+                    </div>
+
+                    <div class="bg-white dark:bg-surface rounded-2xl border border-lightBorder dark:border-gray-800 shadow-sm overflow-hidden flex flex-col md:col-span-2 lg:col-span-1">
+                        <div class="bg-lightBg dark:bg-darker p-3 border-b border-lightBorder dark:border-gray-800">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                                <i class="ph-fill ph-music-notes-simple text-purple-500 text-lg"></i> <span data-i18n="music_genres">Müzik Türleri</span>
+                            </h3>
+                        </div>
+                        <ul id="genre-list" class="p-2 flex flex-col gap-1 flex-1"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Cinema Dedicated Pages -->
+        <section id="view-cinema" class="view-section hidden animate-fade-in w-full flex flex-col p-4">
+            
+            <!-- Cinema Filter & Sort Bar -->
+            <div id="cinema-empty-state" class="flex flex-col items-center justify-center py-20 text-center w-full">
+                <div class="w-20 h-20 bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-fill ph-film-strip text-4xl text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Sinema Arşivi Boş</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto mb-6">İzlediğiniz filmleri arayın, puanlayın ve kendi koleksiyonunuzu oluşturun.</p>
+                <div class="flex gap-3">
+                    <button onclick="app.openCinemaModal()" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-transform shadow-lg shadow-purple-600/20 flex items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> <span>Film Ekle</span>
+                    </button>
+                    <button onclick="app.showView('cinema-search')" class="bg-purple-500/10 text-purple-600 px-6 py-3 rounded-full font-bold active:scale-95 transition-transform flex items-center gap-2 border border-purple-500/20">
+                        <i class="ph-bold ph-magnifying-glass"></i> <span>Film Ara</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="cinema-grid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3"></div>
+        </section>
+
+        <!-- NEW: Cinema Search Section -->
+        <section id="view-cinema-search" class="view-section hidden animate-fade-in w-full flex flex-col p-4 pt-6 md:pt-10">
+            <div class="w-full max-w-2xl mx-auto flex flex-col gap-4 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 md:text-center">Ne izliyorsun?</h2>
+                
+                <div class="w-full flex flex-col gap-4">
+                    <div class="bg-white dark:bg-surface p-1 rounded-xl flex gap-1 shadow-sm border border-lightBorder dark:border-gray-800">
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="cinemaSearchType" value="director" class="peer hidden" onchange="app.updateCinemaSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-purple-500/10 dark:peer-checked:bg-purple-500/20 peer-checked:text-purple-600 dark:peer-checked:text-purple-400 rounded-lg transition-colors">Yönetmen</div>
+                        </label>
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="cinemaSearchType" value="movie" checked class="peer hidden" onchange="app.updateCinemaSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-purple-500/10 dark:peer-checked:bg-purple-500/20 peer-checked:text-purple-600 dark:peer-checked:text-purple-400 rounded-lg transition-colors">Film Adı</div>
+                        </label>
+                    </div>
+
+                    <div class="relative w-full shadow-lg dark:shadow-none rounded-2xl">
+                        <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
+                        <input type="text" id="cinema-search-input" placeholder="Film adı yazın..." 
+                               class="w-full bg-white dark:bg-surface border-2 border-transparent text-gray-900 dark:text-white rounded-2xl pl-12 pr-16 py-4 text-base focus:outline-none focus:border-purple-500 transition-colors shadow-sm"
+                               onkeypress="if(event.key === 'Enter') { this.blur(); app.searchCinema(); }">
+                        <button onclick="app.searchCinema()" id="cinema-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white rounded-xl w-10 h-10 flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50">
+                            <i class="ph-bold ph-arrow-right text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-2">
+                    <button onclick="app.showView('cinema-search')" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-transform shadow-lg shadow-purple-600/20 flex items-center gap-2">
+                    <i class="ph-bold ph-magnifying-glass"></i> <span>Film Ara</span>
+                </button>
+            </div>
+            </div>
+
+            <div id="cinema-search-loading" class="hidden flex flex-col items-center justify-center gap-4 py-12">
+                <i class="ph-bold ph-spinner-gap text-purple-600 text-4xl animate-spin"></i>
+                <p class="text-sm font-medium text-gray-500" id="cinema-search-status-text">Veritabanı aranıyor...</p>
+            </div>
+
+            <div id="cinema-search-results" class="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8"></div>
+        </section>
+
+        <!-- NEW: Literature Dedicated Pages -->
+        <section id="view-literature" class="view-section hidden animate-fade-in w-full flex flex-col p-4">
+            
+            
+            <div id="literature-empty-state" class="flex flex-col items-center justify-center py-20 text-center w-full">
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-fill ph-book-open text-4xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Edebiyat Arşivi Boş</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto mb-6">Okuduğunuz kitapları arayın, puanlayın ve kendi koleksiyonunuzu oluşturun.</p>
+                <div class="flex gap-3">
+                    <button onclick="app.openLiteratureModal()" class="bg-primary text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-transform shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> <span>Kitap Ekle</span>
+                    </button>
+                    <button onclick="app.showView('literature-search')" class="bg-primary/10 text-primary px-6 py-3 rounded-full font-bold active:scale-95 transition-transform flex items-center gap-2 border border-primary/20">
+                        <i class="ph-bold ph-magnifying-glass"></i> <span>Kitap Ara</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="literature-grid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3"></div>
+        </section>
+
+        <!-- NEW: Literature Search Section -->
+        <section id="view-literature-search" class="view-section hidden animate-fade-in w-full flex flex-col p-4 pt-6 md:pt-10">
+            <div class="w-full max-w-2xl mx-auto flex flex-col gap-4 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 md:text-center">Ne okuyorsun?</h2>
+                
+                <div class="w-full flex flex-col gap-4">
+                    <div class="bg-white dark:bg-surface p-1 rounded-xl flex gap-1 shadow-sm border border-lightBorder dark:border-gray-800">
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="literatureSearchType" value="author" class="peer hidden" onchange="app.updateLiteratureSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-primary/10 dark:peer-checked:bg-primary/20 peer-checked:text-primary rounded-lg transition-colors">Yazar</div>
+                        </label>
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="literatureSearchType" value="book" checked class="peer hidden" onchange="app.updateLiteratureSearchPlaceholder()">
+                            <div class="py-2 text-sm font-semibold text-gray-500 peer-checked:bg-primary/10 dark:peer-checked:bg-primary/20 peer-checked:text-primary rounded-lg transition-colors">Kitap Adı</div>
+                        </label>
+                    </div>
+
+                    <div class="relative w-full shadow-lg dark:shadow-none rounded-2xl">
+                        <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
+                        <input type="text" id="literature-search-input" placeholder="Kitap adı yazın..." 
+                               class="w-full bg-white dark:bg-surface border-2 border-transparent text-gray-900 dark:text-white rounded-2xl pl-12 pr-16 py-4 text-base focus:outline-none focus:border-primary transition-colors shadow-sm"
+                               onkeypress="if(event.key === 'Enter') { this.blur(); app.searchLiterature(); }">
+                        <button onclick="app.searchLiterature()" id="literature-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white rounded-xl w-10 h-10 flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50">
+                            <i class="ph-bold ph-arrow-right text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="literature-search-loading" class="hidden flex flex-col items-center justify-center gap-4 py-12">
+                <i class="ph-bold ph-spinner-gap text-primary text-4xl animate-spin"></i>
+                <p class="text-sm font-medium text-gray-500" id="literature-search-status-text">Veritabanı aranıyor...</p>
+            </div>
+
+            <div id="literature-search-results" class="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8"></div>
+        </section>
+
+
+        <!-- Manuel Film Ekleme / İnceleme Modalı -->
+    <div id="cinema-modal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="if(event.target === this) app.closeCinemaModal()">
+        <div class="modal-content w-full max-w-4xl h-[90vh] md:h-[85vh] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300" onclick="event.stopPropagation()">
+            
+            <div id="cinema-slider" class="flex flex-row w-[200%] md:w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+                
+                <!-- SOL PANEL (Künye) -->
+                <div class="w-1/2 md:w-[35%] h-full bg-lightBg dark:bg-surface p-4 md:p-6 flex flex-col relative overflow-y-auto hide-scrollbar border-r border-lightBorder dark:border-gray-800">
+                    
+                    <!-- Mobil Üst Bar -->
+                    <div class="md:hidden absolute top-3 right-3 flex items-center gap-2 z-[60]">
+                        <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-cinema bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-purple-600 px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm transition-colors"><i class="ph-fill ph-lock-key"></i></button>
+                        <button onclick="app.deleteCinema()" class="cinema-delete-btn hidden bg-red-100 text-red-600 px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-trash"></i></button>
+                        <button onclick="app.saveCinema()" class="bg-purple-600 text-white px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-floppy-disk"></i></button>
+                        <button onclick="app.closeCinemaModal()" class="bg-lightHighlight/80 dark:bg-black/50 text-gray-800 dark:text-white p-1.5 rounded-full transition-colors"><i class="ph-bold ph-x text-base"></i></button>
+                    </div>
+
+                    <!-- Afiş Görseli -->
+                    <div class="relative w-full max-w-[200px] sm:max-w-[220px] md:max-w-none px-2 md:px-0 md:aspect-[2/3] mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                        <img loading="lazy" id="cinema-modal-cover" src="" onerror="this.src='https://placehold.co/400x600/ebe4dc/594636?text=Yok'; this.onerror=null;" alt="Poster" class="w-full aspect-[2/3] object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
+                        <button onclick="app.toggleCinemaCoverEdit()" class="absolute bottom-2 right-4 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
+                    </div>
+
+                    <div id="cinema-cover-edit-section" class="hidden w-full bg-white dark:bg-darker p-3 rounded-xl border border-lightBorder dark:border-gray-800 mb-4 animate-fade-in text-left shadow-sm">
+                        <input type="text" id="cinema-poster" placeholder="Afiş URL'si yapıştırın" class="w-full bg-lightBg dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-lg px-3 py-2 text-sm mb-2 focus:border-purple-500 focus:outline-none text-gray-800 dark:text-gray-200">
+                        <input type="file" id="cinema-poster-file" accept="image/*" class="w-full text-xs text-gray-500 mb-2 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-purple-500/10 file:text-purple-600 hover:file:bg-purple-500/20 cursor-pointer">
+                        <button onclick="app.applyCinemaCover()" class="w-full bg-purple-500/10 text-purple-600 dark:text-purple-400 py-2 rounded-lg text-[10px] font-bold">Afişi Uygula</button>
+                    </div>
+
+                    <div class="flex-grow min-w-0 text-left w-full">
+                        <div class="flex items-start justify-between gap-3 w-full mb-1">
+                            <div class="group flex flex-col min-w-0 flex-grow overflow-hidden">
+                                <div class="marquee-container w-full mb-1">
+                                    <input type="text" id="cinema-title" placeholder="Film Adı *" class="marquee-text w-full text-xl md:text-2xl font-bold text-gray-900 dark:text-white bg-transparent outline-none border-b border-dashed border-transparent hover:border-purple-500 focus:border-purple-500 transition-colors italic">
+                                </div>
+                                <div class="marquee-container w-full">
+                                    <input type="text" id="cinema-director" placeholder="Yönetmen" class="marquee-text w-full text-sm md:text-lg text-gray-600 dark:text-gray-300 font-medium bg-transparent outline-none border-b border-dashed border-transparent hover:border-purple-500 focus:border-purple-500 transition-colors">
+                                </div>
+                            </div>
+                            <!-- Puan Rozeti ve Yıldız Seçici wrapper -->
+                            <div class="shrink-0 flex flex-col items-center justify-start pt-1 pr-1 relative">
+                                <div id="cinema-avg-score-circle" class="flex items-center justify-center rounded-full font-black w-10 h-10 md:w-12 md:h-12 text-sm md:text-base border-2 shadow-sm transition-colors duration-300 bg-lightBg text-gray-500 border-lightBorder dark:bg-darker dark:text-gray-500 dark:border-gray-800 cursor-pointer" title="Puanlamak için tıklayın/yıldız seçin" onclick="document.getElementById('cinema-rating-popup')?.classList.toggle('hidden')">
+                                    <span id="modal-cinema-avg-score">-</span>
+                                </div>
+                                <!-- Gizli/Açılır Yıldız Puanlama Alanı -->
+                                <div id="cinema-rating-popup" class="hidden absolute top-full right-0 mt-2 bg-white dark:bg-surface border border-lightBorder dark:border-gray-700 p-2 rounded-xl shadow-xl z-50 min-w-max">
+                                    <div id="cinema-rating-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1.5 w-full">
+                            <!-- Satır 1: Ülke - Sene -->
+                            <div class="flex gap-1.5 w-full">
+                                <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-globe-hemisphere-west text-gray-400 text-xs"></i><input type="text" id="cinema-country" placeholder="Ülke" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
+                                <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-calendar-blank text-gray-400 text-xs"></i><input type="number" id="cinema-year" placeholder="Yıl" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                            </div>
+                            
+                            <!-- Satır 2: Tür - Süre -->
+                            <div class="flex gap-1.5 w-full">
+                                <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-mask-happy text-gray-400 text-xs"></i><input type="text" id="cinema-genre" placeholder="Tür" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                                <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-clock text-gray-400 text-xs"></i><input type="text" id="cinema-duration" placeholder="Süre (dk)" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                            </div>
+                            
+                            <div class="mt-2 w-full">
+                                <div class="flex justify-between items-center mb-1.5"><p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Oyuncular</p><button onclick="app.addCinemaCastRow()" class="text-[10px] text-purple-600 dark:text-purple-400 font-bold hover:underline flex items-center gap-1"><i class="ph-bold ph-plus"></i> Ekle</button></div>
+                                <div id="cinema-cast-list" class="flex flex-col gap-1.5 max-h-16 md:max-h-24 overflow-y-auto hide-scrollbar pr-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-3 pb-4 -mb-4 sticky bottom-0 z-[70] bg-lightBg dark:bg-surface border-t border-lightBorder dark:border-gray-800 w-full flex md:hidden justify-end items-center flex-shrink-0">
+                        <button type="button" onclick="
+                            document.getElementById('cinema-mini-title').textContent = document.getElementById('cinema-title').value || 'İsimsiz';
+                            document.getElementById('cinema-mini-director').textContent = document.getElementById('cinema-director').value || 'Bilinmiyor';
+                            document.getElementById('cinema-mini-cover').src = document.getElementById('cinema-modal-cover').src;
+                            document.getElementById('cinema-slider').classList.add('slide-left');
+                        " class="flex items-center gap-1.5 text-sm font-bold text-gray-800 dark:text-gray-200 hover:text-primary transition-colors">
+                            İnceleme <i class="ph-bold ph-arrow-right text-primary text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SAĞ PANEL (İnceleme) -->
+                <div class="w-1/2 md:w-[65%] h-full flex flex-col bg-lightBg md:bg-white dark:bg-surface md:dark:bg-darker relative overflow-y-auto hide-scrollbar">
+                    
+                    <!-- MOBİL MİNİ HEADER -->
+                    <div class="md:hidden flex items-start gap-4 p-4 border-b border-lightBorder dark:border-gray-800 bg-white dark:bg-surface sticky top-0 z-[60] cursor-pointer active:bg-lightHighlight dark:active:bg-surfaceHover transition-colors shadow-sm" onclick="document.getElementById('cinema-slider').classList.remove('slide-left')">
+                        <img id="cinema-mini-cover" src="" class="w-16 h-24 object-cover rounded-md shadow-md border border-lightBorder dark:border-gray-700 flex-shrink-0" onerror="this.src='https://placehold.co/150x225/ebe4dc/594636?text=Yok'; this.onerror=null;">
+                        <div class="flex flex-col min-w-0 flex-grow pt-1">
+                            <h4 id="cinema-mini-title" class="font-bold text-base text-gray-900 dark:text-white line-clamp-2 italic leading-tight">Film Adı</h4>
+                            <p id="cinema-mini-director" class="text-sm text-gray-500 truncate mt-1">Yönetmen</p>
+                            <span class="text-xs text-purple-600 font-bold mt-auto flex items-center gap-1 pt-2"><i class="ph-bold ph-arrow-left"></i> Künyeye Dön</span>
+                        </div>
+                    </div>
+
+                    <!-- MASAÜSTÜ HEADER -->
+                    <div class="hidden md:flex p-6 border-b border-lightBorder dark:border-gray-800 justify-between items-center sticky top-0 z-50 bg-white/95 dark:bg-darker/95 backdrop-blur-md">
+                        <div class="flex items-center gap-3">
+                            <h3 class="font-bold text-lg flex items-center gap-2 text-gray-900 dark:text-white">İnceleme & Notlar</h3>
+                            <button type="button" onclick="app.closeCinemaModal(); app.showView('cinema-search');" class="bg-purple-500/10 text-purple-600 dark:text-purple-400 px-3 py-1.5 rounded-lg hover:bg-purple-600 hover:text-white transition-colors shrink-0 shadow-sm flex items-center gap-1.5" title="Veritabanında Film Ara">
+                                <i class="ph-bold ph-magnifying-glass text-lg"></i> <span class="text-xs font-bold hidden sm:inline">Ara</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 mr-10">
+                            <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-cinema bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-purple-600 px-3 py-2 rounded-full text-sm font-bold shadow-md cursor-pointer transition-colors" title="Düzenlemeyi Aç/Kapat"><i class="ph-fill ph-lock-key text-lg"></i></button>
+                            <button onclick="app.deleteCinema()" class="cinema-delete-btn hidden bg-red-100 text-red-600 px-3 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:bg-red-200 transition-colors"><i class="ph-bold ph-trash"></i></button>
+                            <button onclick="app.saveCinema()" class="bg-purple-600 text-white px-6 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center gap-2"><i class="ph-bold ph-floppy-disk"></i> Kaydet</button>
+                        </div>
+                        <button onclick="app.closeCinemaModal()" aria-label="Close" class="absolute top-4 right-4 bg-lightHighlight/80 hover:bg-lightBorder dark:bg-black/50 dark:hover:bg-black text-gray-800 dark:text-white p-2 rounded-full transition-colors z-[60]"><i class="ph-bold ph-x text-lg"></i></button>
+                    </div>
+
+                    <div class="p-4 md:p-6 flex-grow flex flex-col gap-2">
+                        <div class="flex items-center gap-2 px-1 mb-1">
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('formatBlock', false, 'H3');" class="bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-200 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-h-three text-sm"></i> Başlık Ekle
+                            </button>
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('bold', false, null);" class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-b text-sm"></i> Kalın
+                            </button>
+                        </div>
+                        <div id="cinema-review" contenteditable="true" data-placeholder="Film hakkındaki düşüncelerinizi, sahneleri veya notlarınızı buraya yazın..." class="w-full h-full min-h-[250px] flex-grow bg-white dark:bg-surfaceHover md:bg-lightBg md:dark:bg-surface border border-lightBorder dark:border-gray-700 rounded-xl p-4 text-[13px] sm:text-sm focus:outline-none focus:border-purple-500 text-gray-800 dark:text-gray-200 transition-colors shadow-inner overflow-y-auto hide-scrollbar leading-relaxed font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Manuel Kitap Ekleme / İnceleme Modalı -->
+    <div id="literature-modal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="if(event.target === this) app.closeLiteratureModal()">
+        <div class="modal-content w-full max-w-4xl h-[90vh] md:h-[85vh] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300" onclick="event.stopPropagation()">
+            
+            <div id="literature-slider" class="flex flex-row w-[200%] md:w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+                
+                <!-- SOL PANEL (Künye) -->
+                <div class="w-1/2 md:w-[35%] h-full bg-lightBg dark:bg-surface p-4 md:p-6 flex flex-col relative overflow-y-auto hide-scrollbar border-r border-lightBorder dark:border-gray-800">
+                    
+                    <!-- Mobil Üst Bar -->
+                    <div class="md:hidden absolute top-3 right-3 flex items-center gap-2 z-[60]">
+                        <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-literature bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-primary px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm transition-colors"><i class="ph-fill ph-lock-key"></i></button>
+                        <button onclick="app.deleteLiterature()" class="literature-delete-btn hidden bg-red-100 text-red-600 px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-trash"></i></button>
+                        <button onclick="app.saveLiterature()" class="bg-primary text-white px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-floppy-disk"></i></button>
+                        <button onclick="app.closeLiteratureModal()" class="bg-lightHighlight/80 dark:bg-black/50 text-gray-800 dark:text-white p-1.5 rounded-full transition-colors"><i class="ph-bold ph-x text-base"></i></button>
+                    </div>
+
+                    <!-- Kapak Görseli -->
+                    <div class="relative w-full max-w-[200px] sm:max-w-[220px] md:max-w-none px-2 md:px-0 md:aspect-[2/3] mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                        <img loading="lazy" id="literature-modal-cover" src="" onerror="this.src='https://placehold.co/400x600/ebe4dc/594636?text=Yok'; this.onerror=null;" alt="Cover" class="w-full aspect-[2/3] object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
+                        <button onclick="app.toggleLiteratureCoverEdit()" class="absolute bottom-2 right-4 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
+                    </div>
+
+                    <div id="literature-cover-edit-section" class="hidden w-full bg-white dark:bg-darker p-3 rounded-xl border border-lightBorder dark:border-gray-800 mb-4 animate-fade-in text-left shadow-sm">
+                        <input type="text" id="literature-cover" placeholder="Kapak URL'si yapıştırın" class="w-full bg-lightBg dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-lg px-3 py-2 text-sm mb-2 focus:border-primary focus:outline-none text-gray-800 dark:text-gray-200">
+                        <input type="file" id="literature-cover-file" accept="image/*" class="w-full text-xs text-gray-500 mb-2 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                        <button onclick="app.applyLiteratureCover()" class="w-full bg-primary/10 text-primary py-2 rounded-lg text-[10px] font-bold">Kapağı Uygula</button>
+                    </div>
+
+                    <div class="flex-grow min-w-0 text-left w-full">
+                        <div class="flex items-start justify-between gap-3 w-full mb-1">
+                            <div class="group flex flex-col min-w-0 flex-grow overflow-hidden">
+                                <div class="marquee-container w-full mb-1">
+                                    <input type="text" id="literature-title" placeholder="Kitap Adı *" class="marquee-text w-full text-xl md:text-2xl font-bold text-gray-900 dark:text-white bg-transparent outline-none border-b border-dashed border-transparent hover:border-primary focus:border-primary transition-colors italic">
+                                </div>
+                                <div class="marquee-container w-full">
+                                    <input type="text" id="literature-author" placeholder="Yazar" class="marquee-text w-full text-sm md:text-lg text-gray-600 dark:text-gray-300 font-medium bg-transparent outline-none border-b border-dashed border-transparent hover:border-primary focus:border-primary transition-colors">
+                                </div>
+                            </div>
+                            <!-- Puan Rozeti ve Yıldız Seçici wrapper -->
+                            <div class="shrink-0 flex flex-col items-center justify-start pt-1 pr-1 relative">
+                                <div id="literature-avg-score-circle" class="flex items-center justify-center rounded-full font-black w-10 h-10 md:w-12 md:h-12 text-sm md:text-base border-2 shadow-sm transition-colors duration-300 bg-lightBg text-gray-500 border-lightBorder dark:bg-darker dark:text-gray-500 dark:border-gray-800 cursor-pointer" title="Puanlamak için tıklayın/yıldız seçin" onclick="document.getElementById('literature-rating-popup')?.classList.toggle('hidden')">
+                                    <span id="modal-literature-avg-score">-</span>
+                                </div>
+                                <!-- Gizli/Açılır Yıldız Puanlama Alanı -->
+                                <div id="literature-rating-popup" class="hidden absolute top-full right-0 mt-2 bg-white dark:bg-surface border border-lightBorder dark:border-gray-700 p-2 rounded-xl shadow-xl z-50 min-w-max">
+                                    <div id="literature-rating-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1.5 w-full">
+                            <!-- Satır 1: Ülke - Sene -->
+                            <div class="flex gap-1.5 w-full">
+                                <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-globe text-gray-400 text-xs"></i><input type="text" id="literature-country" placeholder="Ülke" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
+                                <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-calendar-blank text-gray-400 text-xs"></i><input type="number" id="literature-year" placeholder="Yıl" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                            </div>
+                            
+                            <!-- Satır 2: Tür - Yayınevi -->
+                            <div class="flex gap-1.5 w-full">
+                                <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-bookmarks text-gray-400 text-xs"></i><input type="text" id="literature-genre" placeholder="Tür" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                                <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-buildings text-gray-400 text-xs"></i><input type="text" id="literature-publisher" placeholder="Yayınevi" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                            </div>
+
+                            <!-- Satır 3: Sayfa - Çevirmen -->
+                            <div class="flex gap-1.5 w-full">
+                                <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-file-text text-gray-400 text-xs"></i><input type="number" id="literature-pages" placeholder="Sayfa" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                                <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-translate text-gray-400 text-xs"></i><input type="text" id="literature-translator" placeholder="Çevirmen" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-3 pb-4 -mb-4 sticky bottom-0 z-[70] bg-lightBg dark:bg-surface border-t border-lightBorder dark:border-gray-800 w-full flex md:hidden justify-end items-center flex-shrink-0">
+                        <button type="button" onclick="
+                            document.getElementById('literature-mini-title').textContent = document.getElementById('literature-title').value || 'İsimsiz';
+                            document.getElementById('literature-mini-author').textContent = document.getElementById('literature-author').value || 'Bilinmiyor';
+                            document.getElementById('literature-mini-cover').src = document.getElementById('literature-modal-cover').src;
+                            document.getElementById('literature-slider').classList.add('slide-left');
+                        " class="flex items-center gap-1.5 text-sm font-bold text-gray-800 dark:text-gray-200 hover:text-primary transition-colors">
+                            İnceleme <i class="ph-bold ph-arrow-right text-primary text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SAĞ PANEL (İnceleme) -->
+                <div class="w-1/2 md:w-[65%] h-full flex flex-col bg-lightBg md:bg-white dark:bg-surface md:dark:bg-darker relative overflow-y-auto hide-scrollbar">
+                    
+                    <!-- MOBİL MİNİ HEADER -->
+                    <div class="md:hidden flex items-start gap-4 p-4 border-b border-lightBorder dark:border-gray-800 bg-white dark:bg-surface sticky top-0 z-[60] cursor-pointer active:bg-lightHighlight dark:active:bg-surfaceHover transition-colors shadow-sm" onclick="document.getElementById('literature-slider').classList.remove('slide-left')">
+                        <img id="literature-mini-cover" src="" class="w-16 h-24 object-cover rounded-md shadow-md border border-lightBorder dark:border-gray-700 flex-shrink-0" onerror="this.src='https://placehold.co/150x225/ebe4dc/594636?text=Yok'; this.onerror=null;">
+                        <div class="flex flex-col min-w-0 flex-grow pt-1">
+                            <h4 id="literature-mini-title" class="font-bold text-base text-gray-900 dark:text-white line-clamp-2 italic leading-tight">Kitap Adı</h4>
+                            <p id="literature-mini-author" class="text-sm text-gray-500 truncate mt-1">Yazar</p>
+                            <span class="text-xs text-primary font-bold mt-auto flex items-center gap-1 pt-2"><i class="ph-bold ph-arrow-left"></i> Künyeye Dön</span>
+                        </div>
+                    </div>
+
+                    <!-- MASAÜSTÜ HEADER -->
+                    <div class="hidden md:flex p-6 border-b border-lightBorder dark:border-gray-800 justify-between items-center sticky top-0 z-50 bg-white/95 dark:bg-darker/95 backdrop-blur-md">
+                        <div class="flex items-center gap-3">
+                            <h3 class="font-bold text-lg flex items-center gap-2 text-gray-900 dark:text-white">İnceleme & Notlar</h3>
+                            <button type="button" onclick="app.closeLiteratureModal(); app.showView('literature-search');" class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors shrink-0 shadow-sm flex items-center gap-1.5" title="Veritabanında Kitap Ara">
+                                <i class="ph-bold ph-magnifying-glass text-lg"></i> <span class="text-xs font-bold hidden sm:inline">Ara</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 mr-10">
+                            <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-literature bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-primary px-3 py-2 rounded-full text-sm font-bold shadow-md cursor-pointer transition-colors" title="Düzenlemeyi Aç/Kapat"><i class="ph-fill ph-lock-key text-lg"></i></button>
+                            <button onclick="app.deleteLiterature()" class="literature-delete-btn hidden bg-red-100 text-red-600 px-3 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:bg-red-200 transition-colors"><i class="ph-bold ph-trash"></i></button>
+                            <button onclick="app.saveLiterature()" class="bg-primary text-white px-6 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center gap-2"><i class="ph-bold ph-floppy-disk"></i> Kaydet</button>
+                        </div>
+                        <button onclick="app.closeLiteratureModal()" aria-label="Close" class="absolute top-4 right-4 bg-lightHighlight/80 hover:bg-lightBorder dark:bg-black/50 dark:hover:bg-black text-gray-800 dark:text-white p-2 rounded-full transition-colors z-[60]"><i class="ph-bold ph-x text-lg"></i></button>
+                    </div>
+
+                    <div class="p-4 md:p-6 flex-grow flex flex-col gap-2">
+                        <div class="flex items-center gap-2 px-1 mb-1">
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('formatBlock', false, 'H3');" class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary/20 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-h-three text-sm"></i> Başlık Ekle
+                            </button>
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('bold', false, null);" class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-b text-sm"></i> Kalın
+                            </button>
+                        </div>
+                        <div id="literature-review" contenteditable="true" data-placeholder="Kitap hakkındaki düşüncelerinizi veya alıntılarınızı buraya yazın..." class="w-full h-full min-h-[250px] flex-grow bg-white dark:bg-surfaceHover md:bg-lightBg md:dark:bg-surface border border-lightBorder dark:border-gray-700 rounded-xl p-4 text-[13px] sm:text-sm focus:outline-none focus:border-primary text-gray-800 dark:text-gray-200 transition-colors shadow-inner overflow-y-auto hide-scrollbar leading-relaxed font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    </main>
+
+    <div id="custom-dropdown" class="fixed z-[150] hidden flex-col bg-white/95 dark:bg-surface/95 backdrop-blur-xl border border-lightBorder dark:border-gray-800 rounded-2xl shadow-2xl py-1 min-w-[180px] max-h-64 overflow-y-auto hide-scrollbar transition-opacity opacity-0 duration-200 pointer-events-auto">
+    </div>
+  
+    <!-- Manuel Albüm Ekleme / İnceleme Modalı -->
+    <div id="album-modal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="if(event.target === this) app.closeModal()">
+        <div class="modal-content w-full max-w-4xl h-[90vh] md:h-[85vh] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300" onclick="event.stopPropagation()">
+            
+            <div id="album-slider" class="flex flex-row w-[200%] md:w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+                
+                <!-- SOL PANEL (Künye ve Şarkı Listesi) -->
+                <div class="w-1/2 md:w-[40%] h-full bg-lightBg dark:bg-surface p-4 md:p-6 flex flex-col relative overflow-y-auto hide-scrollbar border-r border-lightBorder dark:border-gray-800">
+                    
+                    <!-- Mobil Üst Bar -->
+                    <div class="md:hidden absolute top-3 right-3 flex items-center gap-2 z-[60]">
+                        <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-album bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-primary px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm transition-colors"><i class="ph-fill ph-lock-key"></i></button>
+                        <button onclick="app.deleteAlbumData(AppState.currentModalAlbum.id); app.closeModal();" class="album-delete-btn hidden bg-red-100 text-red-600 px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-trash"></i></button>
+                        <button onclick="app.saveAlbumToLibrary()" class="bg-primary text-white px-2.5 py-1.5 rounded-full text-sm font-bold shadow-sm"><i class="ph-bold ph-floppy-disk"></i></button>
+                        <button onclick="app.closeModal()" class="bg-lightHighlight/80 dark:bg-black/50 text-gray-800 dark:text-white p-1.5 rounded-full transition-colors"><i class="ph-bold ph-x text-base"></i></button>
+                    </div>
+
+                    <!-- Kapak Görseli -->
+                    <div class="relative w-full px-4 sm:px-6 md:px-0 md:aspect-square mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                        <img loading="lazy" id="modal-cover" src="" alt="Cover" class="w-full aspect-square object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
+                        <button onclick="app.toggleCoverEdit()" class="absolute bottom-4 right-6 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
+                    </div>
+
+                    <div id="cover-edit-section" class="hidden w-full bg-white dark:bg-darker p-3 rounded-xl border border-lightBorder dark:border-gray-800 mb-4 animate-fade-in text-left shadow-sm">
+                        <input type="text" id="custom-cover-url" placeholder="Görsel URL'si yapıştırın" class="w-full bg-lightBg dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-lg px-3 py-2 text-xs mb-2 focus:border-primary focus:outline-none text-gray-800 dark:text-gray-200">
+                        <input type="file" id="custom-cover-file" accept="image/*" class="w-full text-xs text-gray-500 mb-2 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                        <button onclick="app.applyCustomCover()" class="w-full bg-primary/10 text-primary py-2 rounded-lg text-[10px] font-bold">Kapağı Uygula</button>
+                    </div>
+
+                    <div class="flex-grow min-w-0 text-left w-full flex flex-col gap-2">
+                        <div class="flex items-start justify-between gap-3 w-full mb-1">
+                            <div class="group flex flex-col min-w-0 flex-grow overflow-hidden">
+                                <div class="marquee-container w-full mb-1">
+                                    <input type="text" id="album-title" placeholder="Albüm Adı *" class="marquee-text w-full text-lg md:text-xl font-bold text-gray-900 dark:text-white bg-transparent outline-none border-b border-dashed border-transparent hover:border-primary focus:border-primary transition-colors italic">
+                                </div>
+                                <div class="marquee-container w-full">
+                                    <input type="text" id="album-artist" placeholder="Sanatçı" class="marquee-text w-full text-sm md:text-base text-gray-600 dark:text-gray-300 font-medium bg-transparent outline-none border-b border-dashed border-transparent hover:border-primary focus:border-primary transition-colors">
+                                </div>
+                            </div>
+                            <div class="shrink-0 flex flex-col items-center justify-start pt-1 pr-1">
+                                <div id="modal-avg-score-circle" class="flex items-center justify-center rounded-full font-black w-10 h-10 md:w-12 md:h-12 text-sm md:text-base border-2 shadow-sm transition-colors duration-300 bg-lightBg text-gray-500 border-lightBorder dark:bg-darker dark:text-gray-500 dark:border-gray-800">
+                                    <span id="modal-avg-score">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2 w-full">
+                            <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-calendar-blank text-gray-400 text-xs"></i><input type="number" id="album-year" placeholder="Yıl" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                            <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-record text-gray-400 text-xs"></i><input type="text" id="album-label" placeholder="Şirket" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
+                        </div>
+                        <div class="flex gap-2 w-full">
+                            <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-globe text-gray-400 text-xs"></i><input type="text" id="album-country" placeholder="Ülke" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
+                            <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-music-notes text-gray-400 text-xs"></i><input type="text" id="album-genre" placeholder="Tür" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none">
+                            <button onclick="app.autoFetchGenres(false)" id="auto-fetch-genre-btn" class="hidden text-[10px] text-primary hover:text-white hover:bg-primary px-1 rounded transition-colors flex-shrink-0" title="Oto Bul"><i class="ph-bold ph-magic-wand"></i></button></div>
+                        </div>
+
+                        <!-- Şarkı Listesi -->
+                        <div class="mt-1 md:mt-3 w-full flex flex-col shrink-0">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Şarkı Listesi</p>
+                                <div class="flex items-center bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-full p-0.5 shadow-sm text-[9px]">
+                                    <button onclick="app.toggleModalTrackSort('default')" id="btn-track-sort-default" class="px-2 py-0.5 rounded-full font-semibold transition-all">Sıra</button>
+                                    <button onclick="app.toggleModalTrackSort('rating')" id="btn-track-sort-rating" class="px-2 py-0.5 rounded-full font-semibold transition-all">Puan</button>
+                                </div>
+                            </div>
+                            <!-- Yükseklik (h-[115px]) 3 şarkıya göre sabitlendi. Liste bu kutu içinde kayacak -->
+                            <div id="modal-tracklist" class="flex flex-col gap-1 overflow-y-auto hide-scrollbar h-[115px] md:h-48 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 shadow-inner"></div>
+                            <button onclick="app.addNewTrack()" class="mt-1.5 text-[10px] text-primary font-bold hover:underline flex items-center justify-center gap-1 w-full py-1 border border-dashed border-primary/40 rounded-lg bg-primary/5 transition-colors"><i class="ph-bold ph-plus"></i> Şarkı Ekle</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-3 pb-4 -mb-4 sticky bottom-0 z-[70] bg-lightBg dark:bg-surface border-t border-lightBorder dark:border-gray-800 w-full flex md:hidden justify-end items-center flex-shrink-0">
+                        <button type="button" onclick="
+                            document.getElementById('album-mini-title').textContent = document.getElementById('album-title').value || 'İsimsiz';
+                            document.getElementById('album-mini-artist').textContent = document.getElementById('album-artist').value || 'Bilinmiyor';
+                            document.getElementById('album-mini-cover').src = document.getElementById('modal-cover').src;
+                            document.getElementById('album-slider').classList.add('slide-left');
+                        " class="flex items-center gap-1.5 text-sm font-bold text-gray-800 dark:text-gray-200 hover:text-primary transition-colors">
+                            İnceleme <i class="ph-bold ph-arrow-right text-primary text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SAĞ PANEL (İnceleme) -->
+                <div class="w-1/2 md:w-[60%] h-full flex flex-col bg-lightBg md:bg-white dark:bg-surface md:dark:bg-darker relative overflow-y-auto hide-scrollbar">
+                    
+                    <!-- MOBİL MİNİ HEADER -->
+                    <div class="md:hidden flex items-start gap-4 p-4 border-b border-lightBorder dark:border-gray-800 bg-white dark:bg-surface sticky top-0 z-[60] cursor-pointer active:bg-lightHighlight dark:active:bg-surfaceHover transition-colors shadow-sm" onclick="document.getElementById('album-slider').classList.remove('slide-left')">
+                        <img id="album-mini-cover" src="" class="w-16 h-16 object-cover rounded-md shadow-md border border-lightBorder dark:border-gray-700 flex-shrink-0" onerror="this.src='https://placehold.co/150x150/ebe4dc/594636?text=Yok'; this.onerror=null;">
+                        <div class="flex flex-col min-w-0 flex-grow pt-0.5">
+                            <h4 id="album-mini-title" class="font-bold text-base text-gray-900 dark:text-white line-clamp-1 italic leading-tight">Albüm Adı</h4>
+                            <p id="album-mini-artist" class="text-sm text-gray-500 truncate mt-0.5">Sanatçı</p>
+                            <span class="text-xs text-primary font-bold mt-auto flex items-center gap-1 pt-1.5"><i class="ph-bold ph-arrow-left"></i> Künyeye Dön</span>
+                        </div>
+                    </div>
+
+                    <!-- MASAÜSTÜ HEADER -->
+                    <div class="hidden md:flex p-6 border-b border-lightBorder dark:border-gray-800 justify-between items-center sticky top-0 z-50 bg-white/95 dark:bg-darker/95 backdrop-blur-md">
+                        <div class="flex items-center gap-3">
+                            <h3 class="font-bold text-lg flex items-center gap-2 text-gray-900 dark:text-white">İnceleme & Notlar</h3>
+                            <button type="button" onclick="app.closeModal(); app.showView('search');" class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors shrink-0 shadow-sm flex items-center gap-1.5" title="Veritabanında Albüm Ara">
+                                <i class="ph-bold ph-magnifying-glass text-lg"></i> <span class="text-xs font-bold hidden sm:inline">Ara</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 mr-10">
+                            <button type="button" onclick="app.toggleKünyeEdit()" class="kunye-edit-btn-album bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-primary px-3 py-2 rounded-full text-sm font-bold shadow-md cursor-pointer transition-colors" title="Düzenlemeyi Aç/Kapat"><i class="ph-fill ph-lock-key text-lg"></i></button>
+                            <button onclick="app.removeAlbumFromLibrary()" class="album-delete-btn hidden bg-red-100 text-red-600 px-3 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:bg-red-200 transition-colors"><i class="ph-bold ph-trash"></i></button>
+                            <button onclick="app.saveAlbumToLibrary()" class="bg-primary text-white px-6 py-2 rounded-full text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center gap-2"><i class="ph-bold ph-floppy-disk"></i> Kaydet</button>
+                        </div>
+                        <button onclick="app.closeModal()" aria-label="Close" class="absolute top-4 right-4 bg-lightHighlight/80 hover:bg-lightBorder dark:bg-black/50 dark:hover:bg-black text-gray-800 dark:text-white p-2 rounded-full transition-colors z-[60]"><i class="ph-bold ph-x text-lg"></i></button>
+                    </div>
+
+                    <div class="p-4 md:p-6 flex-grow flex flex-col gap-2">
+                        <div class="flex items-center gap-2 px-1 mb-1">
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('formatBlock', false, 'H3');" class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary/20 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-h-three text-sm"></i> Başlık Ekle
+                            </button>
+                            <button type="button" onmousedown="event.preventDefault();" onclick="document.execCommand('bold', false, null);" class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors shadow-sm flex items-center gap-1.5">
+                                <i class="ph-bold ph-text-b text-sm"></i> Kalın
+                            </button>
+                        </div>
+                        <div id="album-review" contenteditable="true" data-placeholder="Albüm hakkındaki düşüncelerinizi veya notlarınızı buraya yazın..." class="w-full h-full min-h-[250px] flex-grow bg-white dark:bg-surfaceHover md:bg-lightBg md:dark:bg-surface border border-lightBorder dark:border-gray-700 rounded-xl p-4 text-[13px] sm:text-sm focus:outline-none focus:border-primary text-gray-800 dark:text-gray-200 transition-colors shadow-inner overflow-y-auto hide-scrollbar leading-relaxed font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="note-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] hidden items-center justify-center p-4 transition-opacity duration-200 opacity-0" onclick="if(event.target === this) app.closeNotePanel()">
+        <div class="bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative transform scale-95 transition-transform duration-200 flex flex-col" onclick="event.stopPropagation()">
+            <div class="p-4 border-b border-lightBorder dark:border-gray-800 flex justify-between items-center bg-lightBg dark:bg-darker">
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary/20 p-2 rounded-full text-primary">
+                        <i class="ph-fill ph-paperclip text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 id="note-modal-title" class="font-bold text-gray-900 dark:text-white"><span>Not</span></h3>
+                        <p id="note-modal-subtitle" class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px] md:max-w-[300px] font-medium"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="note-edit-btn" onclick="app.toggleNoteEditMode()" class="text-gray-500 hover:bg-lightBorder dark:hover:bg-gray-700 p-2 rounded-full transition-colors active:scale-90"><i class="ph-bold ph-pencil-simple text-lg"></i></button>
+                    <button onclick="app.closeNotePanel()" class="text-gray-500 hover:bg-lightBorder dark:hover:bg-gray-700 p-2 rounded-full transition-colors active:scale-90"><i class="ph-bold ph-x text-lg"></i></button>
+                </div>
+            </div>
+            <div class="p-4 flex-grow relative bg-white dark:bg-surface">
+                <div id="note-display" class="w-full h-48 md:h-64 overflow-y-auto text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap hide-scrollbar p-5 bg-lightBg dark:bg-darker rounded-xl border border-lightBorder dark:border-gray-800 shadow-inner font-medium italic"></div>
+                <textarea id="note-textarea" data-i18n-placeholder="note_placeholder" placeholder="Notlarınızı buraya yazın..." class="hidden w-full h-48 md:h-64 bg-lightBg dark:bg-darker border border-lightBorder dark:border-gray-700 rounded-xl p-5 text-base focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none text-gray-800 dark:text-gray-200 transition-colors shadow-inner hide-scrollbar leading-relaxed font-medium italic" onkeydown="app.handleNoteKeydown(event)"></textarea>
+            </div>
+            <div id="note-modal-footer" class="p-4 border-t border-lightBorder dark:border-gray-800 hidden justify-end gap-3 bg-lightBg/50 dark:bg-darker/50">
+                <button onclick="app.closeNotePanel()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-lightBorder dark:hover:bg-gray-800 transition-colors active:scale-95" data-i18n="cancel">İptal</button>
+                <button onclick="app.saveNote()" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-primary text-white hover:scale-105 transition-transform shadow-lg shadow-primary/30 flex items-center gap-2">
+                    <i class="ph-bold ph-check"></i> <span data-i18n="save_note">Notu Kaydet</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="all-notes-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[160] hidden items-center justify-center p-4 transition-opacity duration-200 opacity-0" onclick="if(event.target === this) app.closeAllNotesModal()">
+        <div class="bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative transform scale-95 transition-transform duration-200 flex flex-col" onclick="event.stopPropagation()">
+            <div class="p-4 border-b border-lightBorder dark:border-gray-800 flex justify-between items-center bg-lightBg dark:bg-darker">
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary/20 p-2 rounded-full text-primary">
+                        <i class="ph-fill ph-notebook text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 dark:text-white" data-i18n="all_notes">Tüm Notlar</h3>
+                </div>
+                <button onclick="app.closeAllNotesModal()" class="text-gray-500 hover:bg-lightBorder dark:hover:bg-gray-700 p-2 rounded-full transition-colors active:scale-90"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            <div class="p-4 md:p-5 flex-grow max-h-[60vh] overflow-y-auto hide-scrollbar bg-white dark:bg-surface relative">
+                <div id="all-notes-content" class="w-full text-left flex flex-col gap-2"></div>
+            </div>
+            <div class="p-4 border-t border-lightBorder dark:border-gray-800 bg-lightBg/50 dark:bg-darker/50">
+                <button onclick="app.copyAllNotes()" class="w-full bg-primary text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                    <i class="ph-bold ph-copy"></i> <span data-i18n="copy_notes">Notları Kopyala</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="export-playlist-modal" onclick="document.getElementById('export-playlist-modal').classList.add('hidden')" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative animate-fade-in" onclick="event.stopPropagation()">
+            <div class="p-4 border-b border-lightBorder dark:border-gray-800 flex justify-between">
+                <h3 class="font-bold flex items-center gap-2"><i class="ph-fill ph-spotify-logo text-primary text-xl"></i> <span data-i18n="favorite_tracks">Favoriler</span></h3>
+                <button onclick="document.getElementById('export-playlist-modal').classList.add('hidden')"><i class="ph-bold ph-x text-lg text-gray-500"></i></button>
+            </div>
+            <div class="p-4">
+                <textarea id="playlist-textarea" class="w-full h-40 bg-lightBg dark:bg-darker border border-lightBorder dark:border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-primary resize-none font-mono" readonly></textarea>
+            </div>
+            <div class="p-4 border-t border-lightBorder dark:border-gray-800">
+                <button onclick="app.copyPlaylistToClipboard()" class="w-full bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-copy"></i> <span data-i18n="copy_list">Listeyi Kopyala</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="genre-selection-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden items-center justify-center p-4" onclick="app.closeGenreModal()">
+        <div class="bg-white dark:bg-surface border border-lightBorder dark:border-gray-800 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative animate-fade-in" onclick="event.stopPropagation()">
+            <div class="p-4 border-b border-lightBorder dark:border-gray-800 flex justify-between items-center">
+                <h3 class="font-bold" data-i18n="add_genre">Tür Ekle</h3>
+                <button onclick="app.closeGenreModal()"><i class="ph-bold ph-x text-gray-500"></i></button>
+            </div>
+            <div class="p-4 space-y-3">
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed" data-i18n="type_genres_comma">
+                    Eklemek istediğiniz türleri <span class="font-bold text-gray-800 dark:text-gray-200">virgülle ayırarak</span> (Maks. 3) yazabilirsiniz.
+                </p>
+                <input type="text" id="custom-genre-input" placeholder="Örn: Rock, Indie, Alternative" class="w-full bg-lightBg dark:bg-darker border border-lightBorder dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary text-gray-800 dark:text-gray-200 transition-colors" onkeypress="if(event.key === 'Enter') { app.confirmAddGenre(); }">
+            </div>
+            <div class="p-4 border-t border-lightBorder dark:border-gray-800 bg-lightBg dark:bg-darker/50 flex gap-2">
+                <button onclick="app.autoFetchGenres(true)" class="flex-1 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 py-3 rounded-xl font-bold active:scale-95 transition-transform flex items-center justify-center gap-1.5 border border-purple-200 dark:border-purple-500/30">
+                    <i class="ph-bold ph-magic-wand text-lg"></i> <span data-i18n="auto_find">Oto Bul</span>
+                </button>
+                <button onclick="app.confirmAddGenre()" class="flex-[2] bg-primary text-white py-3 rounded-xl font-bold active:scale-95 transition-transform" data-i18n="add">Ekle</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed top-12 left-1/2 transform -translate-x-1/2 z-[120] flex flex-col gap-2 w-[90vw] max-w-sm pointer-events-none safe-pt"></div>
+
+    <script type="module" src="app.js"></script>
+   
+    
+    
+</body>
+</html>

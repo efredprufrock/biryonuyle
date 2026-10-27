@@ -1,0 +1,187 @@
+* { 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+
+body { 
+    font-family: 'Merriweather', serif; 
+    transition: background-color 0.3s, color 0.3s; 
+    min-height: 100vh;
+    min-height: 100dvh; 
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+    .safe-pt { padding-top: max(1rem, env(safe-area-inset-top)); }
+    .safe-pb { padding-bottom: max(5rem, env(safe-area-inset-bottom)); }
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #dcd1c6; border-radius: 4px; }
+.dark ::-webkit-scrollbar-thumb { background: #3b2b20; }
+
+.star-btn:hover ~ .star-btn i { color: #9ca3af !important; } 
+.star-container:hover .star-btn i { color: #d17b38 !important; }
+.star-container .star-btn:hover ~ .star-btn i { color: #9ca3af !important; }
+
+.modal-enter { opacity: 0; transform: scale(0.95); }
+.modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.2s ease-out; }
+.slide-up { transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1); }
+
+/* Otomatik Kayan Yazı (Marquee) Efekti */
+.marquee-container {
+    container-type: inline-size;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+
+.marquee-text {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* Kayma efekti için ortak sınır kaldırma */
+.marquee-container:hover .marquee-text,
+.group:hover .marquee-text {
+    max-width: max-content;
+    text-overflow: clip;
+}
+
+/* 1. Eser Adları (Daha Yavaş - 6 saniye) */
+/* Kartlardaki H3 başlıkları ve modallardaki başlık inputları (-title) */
+.marquee-container:hover h3.marquee-text,
+.group:hover h3.marquee-text,
+.marquee-container:hover input[id*="-title"].marquee-text,
+.group:hover input[id*="-title"].marquee-text {
+    animation: marquee-scroll 6s linear 0.2s infinite alternate;
+}
+
+/* 2. Sanatçı / Yazar Adları (Daha Hızlı - 2.5 saniye) */
+/* Kartlardaki span/button alt başlıkları ve modallardaki sanatçı inputları */
+.marquee-container:hover span.marquee-text,
+.group:hover span.marquee-text,
+.marquee-container:hover button.marquee-text,
+.group:hover button.marquee-text,
+.marquee-container:hover input:not([id*="-title"]).marquee-text,
+.group:hover input:not([id*="-title"]).marquee-text {
+    animation: marquee-scroll 2.5s linear 0.2s infinite alternate;
+}
+
+@keyframes marquee-scroll {
+    0%, 10% { transform: translateX(0); }
+    /* Sadece yazı containerdan büyükse (taşıyorsa) kayar, aksi halde hareket etmez */
+    90%, 100% { transform: translateX(min(calc(100cqw - 100%), 0px)); }
+}
+
+/* Mobil Modal Slider Efekti */
+@media (max-width: 767px) {
+    .slide-left { transform: translateX(-50%); }
+}
+
+/* Wikipedia tarzı başlıklar ve zengin metin (Rich Text) ayarları */
+[contenteditable="true"] h3 {
+    font-size: 1.05rem; /* Gövde metnine uygun orantılı boyut */
+    font-weight: 900;
+    margin-top: 1.25rem;
+    margin-bottom: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid rgba(156, 163, 175, 0.2);
+    font-style: normal;
+}
+[contenteditable="true"] h3:first-child {
+    margin-top: 0;
+}
+[contenteditable="true"] b, [contenteditable="true"] strong {
+    font-weight: 900;
+}
+/* Placeholder (Yer tutucu metin) görünümü */
+[contenteditable="true"]:empty:before {
+    content: attr(data-placeholder);
+    color: #9ca3af;
+    font-style: italic;
+    pointer-events: none;
+    display: block;
+}
+
+/* ZİYARETÇİ MODU GİZLEMELERİ (SADECE OKUMA VE GÖRÜNTÜLEME) */
+body.is-visitor:not(.show-login) #auth-wrapper,
+body.is-visitor button[onclick*="openEmptyAlbumModal"],
+body.is-visitor button[onclick*="openCinemaModal"],
+body.is-visitor button[onclick*="openLiteratureModal"],
+body.is-visitor button[onclick*="saveAlbum"],
+body.is-visitor button[onclick*="saveCinema"],
+body.is-visitor button[onclick*="saveLiterature"],
+body.is-visitor button[onclick*="deleteAlbum"],
+body.is-visitor button[onclick*="deleteCinema"],
+body.is-visitor button[onclick*="deleteLiterature"],
+body.is-visitor button[onclick*="addNewTrack"],
+body.is-visitor button[onclick*="deleteTrack"],
+body.is-visitor button[onclick*="toggleCoverEdit"],
+body.is-visitor button[onclick*="toggleCinemaCoverEdit"],
+body.is-visitor button[onclick*="toggleLiteratureCoverEdit"],
+body.is-visitor button[onclick*="applyCustomCover"],
+body.is-visitor button[onclick*="applyCinemaCover"],
+body.is-visitor button[onclick*="applyLiteratureCover"],
+body.is-visitor button[onclick*="formatBlock"],
+body.is-visitor button[onclick*="bold"],
+body.is-visitor .kunye-edit-btn-album,
+body.is-visitor .kunye-edit-btn-cinema,
+body.is-visitor .kunye-edit-btn-literature,
+body.is-visitor .album-delete-btn,
+body.is-visitor .cinema-delete-btn,
+body.is-visitor .literature-delete-btn,
+body.is-visitor #note-edit-btn,
+body.is-visitor button.text-gray-400[onclick*="openNotePanel"],
+/* YENİ: İnceleme modallarındaki Ara Butonları */
+body.is-visitor button[onclick*="showView('search')"],
+body.is-visitor button[onclick*="showView('cinema-search')"],
+body.is-visitor button[onclick*="showView('literature-search')"],
+/* YENİ: Oyuncu Listesi Ekle/Sil Butonları */
+body.is-visitor button[onclick*="addCinemaCastRow"],
+body.is-visitor button[onclick*="parentElement.remove()"] {
+    display: none !important;
+}
+
+/* Künye ve Form Alanlarını Ziyaretçilere Kilitler (Tıklanamaz Yapar) */
+body.is-visitor #album-modal input,
+body.is-visitor #cinema-modal input,
+body.is-visitor #literature-modal input {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* YENİ: İnceleme (Zengin Metin) alanını tarayıcı düzeyinde "Salt Okunur" yapar */
+body.is-visitor [contenteditable="true"] {
+    -webkit-user-modify: read-only !important;
+    pointer-events: none !important;
+}
+
+/* Yıldız Puanlamasını Değiştirmeyi Kilitler */
+body.is-visitor #modal-avg-score-circle,
+body.is-visitor #cinema-avg-score-circle,
+body.is-visitor #literature-avg-score-circle,
+body.is-visitor .star-container {
+    pointer-events: none !important;
+}
+
+/* Üst Satır (Header) Admin Giriş/Çıkış Butonları Görünürlüğü */
+body.show-login:not(.is-admin) #header-login-btn {
+    display: flex !important;
+}
+body.is-admin #header-admin-profile {
+    display: flex !important;
+}
