@@ -782,7 +782,7 @@
                     </div>
 
                     <!-- Afiş Görseli -->
-                    <div class="relative w-full max-w-[200px] sm:max-w-[220px] md:max-w-none px-2 md:px-0 md:aspect-[2/3] mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                    <div class="relative w-full max-w-[260px] sm:max-w-[280px] md:max-w-none md:aspect-[2/3] mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
                         <img loading="lazy" id="cinema-modal-cover" src="" onerror="this.src='https://placehold.co/400x600/ebe4dc/594636?text=Yok'; this.onerror=null;" alt="Poster" class="w-full aspect-[2/3] object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
                         <button onclick="app.toggleCinemaCoverEdit()" class="absolute bottom-2 right-4 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
                     </div>
@@ -793,7 +793,7 @@
                         <button onclick="app.applyCinemaCover()" class="w-full bg-purple-500/10 text-purple-600 dark:text-purple-400 py-2 rounded-lg text-[10px] font-bold">Afişi Uygula</button>
                     </div>
 
-                    <div class="flex-grow min-w-0 text-left w-full">
+                    <div class="flex-grow min-w-0 text-left w-full flex flex-col gap-2">
                         <div class="flex items-start justify-between gap-3 w-full mb-1">
                             <div class="group flex flex-col min-w-0 flex-grow overflow-hidden">
                                 <div class="marquee-container w-full mb-1">
@@ -815,15 +815,15 @@
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-1.5 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <!-- Satır 1: Ülke - Sene -->
-                            <div class="flex gap-1.5 w-full">
+                            <div class="flex gap-2 w-full">
                                 <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-globe-hemisphere-west text-gray-400 text-xs"></i><input type="text" id="cinema-country" placeholder="Ülke" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
                                 <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-calendar-blank text-gray-400 text-xs"></i><input type="number" id="cinema-year" placeholder="Yıl" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                             </div>
                             
                             <!-- Satır 2: Tür - Süre -->
-                            <div class="flex gap-1.5 w-full">
+                            <div class="flex gap-2 w-full">
                                 <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-mask-happy text-gray-400 text-xs"></i><input type="text" id="cinema-genre" placeholder="Tür" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                                 <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-clock text-gray-400 text-xs"></i><input type="text" id="cinema-duration" placeholder="Süre (dk)" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                             </div>
@@ -910,7 +910,7 @@
                     </div>
 
                     <!-- Kapak Görseli -->
-                    <div class="relative w-full max-w-[200px] sm:max-w-[220px] md:max-w-none px-2 md:px-0 md:aspect-[2/3] mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                    <div class="relative w-full max-w-[260px] sm:max-w-[280px] md:max-w-none md:aspect-[2/3] mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
                         <img loading="lazy" id="literature-modal-cover" src="" onerror="this.src='https://placehold.co/400x600/ebe4dc/594636?text=Yok'; this.onerror=null;" alt="Cover" class="w-full aspect-[2/3] object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
                         <button onclick="app.toggleLiteratureCoverEdit()" class="absolute bottom-2 right-4 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
                     </div>
@@ -921,7 +921,7 @@
                         <button onclick="app.applyLiteratureCover()" class="w-full bg-primary/10 text-primary py-2 rounded-lg text-[10px] font-bold">Kapağı Uygula</button>
                     </div>
 
-                    <div class="flex-grow min-w-0 text-left w-full">
+                    <div class="flex-grow min-w-0 text-left w-full flex flex-col gap-2">
                         <div class="flex items-start justify-between gap-3 w-full mb-1">
                             <div class="group flex flex-col min-w-0 flex-grow overflow-hidden">
                                 <div class="marquee-container w-full mb-1">
@@ -943,21 +943,21 @@
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-1.5 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <!-- Satır 1: Ülke - Sene -->
-                            <div class="flex gap-1.5 w-full">
+                            <div class="flex gap-2 w-full">
                                 <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-globe text-gray-400 text-xs"></i><input type="text" id="literature-country" placeholder="Ülke" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
                                 <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-calendar-blank text-gray-400 text-xs"></i><input type="number" id="literature-year" placeholder="Yıl" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                             </div>
                             
                             <!-- Satır 2: Tür - Yayınevi -->
-                            <div class="flex gap-1.5 w-full">
+                            <div class="flex gap-2 w-full">
                                 <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-bookmarks text-gray-400 text-xs"></i><input type="text" id="literature-genre" placeholder="Tür" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                                 <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-buildings text-gray-400 text-xs"></i><input type="text" id="literature-publisher" placeholder="Yayınevi" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                             </div>
 
                             <!-- Satır 3: Sayfa - Çevirmen -->
-                            <div class="flex gap-1.5 w-full">
+                            <div class="flex gap-2 w-full">
                                 <div class="flex-1 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-file-text text-gray-400 text-xs"></i><input type="number" id="literature-pages" placeholder="Sayfa" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none"></div>
                                 <div class="flex-[1.5] bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 flex items-center gap-1.5 shadow-sm"><i class="ph-bold ph-translate text-gray-400 text-xs"></i><input type="text" id="literature-translator" placeholder="Çevirmen" class="w-full text-[10px] font-semibold text-gray-800 dark:text-gray-200 bg-transparent outline-none capitalize"></div>
                             </div>
@@ -1044,7 +1044,7 @@
                     </div>
 
                     <!-- Kapak Görseli -->
-                    <div class="relative w-full px-4 sm:px-6 md:px-0 md:aspect-square mb-2 md:mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
+                    <div class="relative w-full max-w-[260px] sm:max-w-[280px] md:max-w-none md:aspect-square mb-5 shadow-2xl rounded-xl group mx-auto md:mx-0 flex-shrink-0 mt-8 md:mt-0">
                         <img loading="lazy" id="modal-cover" src="" alt="Cover" class="w-full aspect-square object-cover rounded-xl bg-lightHighlight dark:bg-darker border border-lightBorder dark:border-gray-800 shadow-md">
                         <button onclick="app.toggleCoverEdit()" class="absolute bottom-4 right-6 md:bottom-3 md:right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full shadow-lg active:scale-90 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><i class="ph-bold ph-image-square"></i></button>
                     </div>
@@ -1083,7 +1083,7 @@
                         </div>
 
                         <!-- Şarkı Listesi -->
-                        <div class="mt-1 md:mt-3 w-full flex flex-col shrink-0">
+                        <div class="mt-2 md:mt-3 w-full flex flex-col flex-grow shrink-0 mb-2">
                             <div class="flex justify-between items-center mb-1.5">
                                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Şarkı Listesi</p>
                                 <div class="flex items-center bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-full p-0.5 shadow-sm text-[9px]">
@@ -1091,9 +1091,9 @@
                                     <button onclick="app.toggleModalTrackSort('rating')" id="btn-track-sort-rating" class="px-2 py-0.5 rounded-full font-semibold transition-all">Puan</button>
                                 </div>
                             </div>
-                            <!-- Yükseklik (h-[115px]) 3 şarkıya göre sabitlendi. Liste bu kutu içinde kayacak -->
-                            <div id="modal-tracklist" class="flex flex-col gap-1 overflow-y-auto hide-scrollbar h-[115px] md:h-48 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 shadow-inner"></div>
-                            <button onclick="app.addNewTrack()" class="mt-1.5 text-[10px] text-primary font-bold hover:underline flex items-center justify-center gap-1 w-full py-1 border border-dashed border-primary/40 rounded-lg bg-primary/5 transition-colors"><i class="ph-bold ph-plus"></i> Şarkı Ekle</button>
+                            <!-- Liste kutusu esnek (flex-grow) yapılarak boşlukları doldurması sağlandı -->
+                            <div id="modal-tracklist" class="flex flex-col gap-1 overflow-y-auto hide-scrollbar flex-grow min-h-[160px] md:h-48 bg-white dark:bg-darker border border-lightBorder dark:border-gray-800 rounded-lg p-1.5 shadow-inner"></div>
+                            <button onclick="app.addNewTrack()" class="mt-1.5 text-[10px] text-primary font-bold hover:underline flex items-center justify-center gap-1 w-full py-1 border border-dashed border-primary/40 rounded-lg bg-primary/5 transition-colors flex-shrink-0"><i class="ph-bold ph-plus"></i> Şarkı Ekle</button>
                         </div>
                     </div>
 
@@ -1248,6 +1248,28 @@
 
     <script type="module" src="app.js"></script>
    
+    <!-- Input Alanları İçin Dinamik Kaydırma Düzeltmesi -->
+    <script>
+        document.addEventListener('mouseover', (e) => {
+            const group = e.target.closest('.group');
+            if (group) {
+                group.querySelectorAll('input.marquee-text').forEach(input => {
+                    if (input.scrollWidth > input.clientWidth) {
+                        input.style.width = input.scrollWidth + 'px'; 
+                    }
+                });
+            }
+        });
+        
+        document.addEventListener('mouseout', (e) => {
+            const group = e.target.closest('.group');
+            if (group) {
+                group.querySelectorAll('input.marquee-text').forEach(input => {
+                    input.style.width = ''; 
+                });
+            }
+        });
+    </script>
     
     
 </body>
